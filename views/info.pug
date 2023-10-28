@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Caută vânzător:
+  form(action="/", method="post")
+    label(for="input") Introdu codul fiscal: 
+    input(type="text", id="input", name="codfiscal", required)
+    input(type="submit", value="Submit")
+
+  p Codul fiscal căutat: 
+    i #{codfiscal}

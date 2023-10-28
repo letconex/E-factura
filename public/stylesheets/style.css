@@ -1,0 +1,46 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+nav {
+    background: lightblue;
+}
+
+ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    text-align: left;
+}
+
+ul li {
+    display: inline-block;
+    cursor: pointer;
+    padding: 6px;
+}
+
+ul li a {
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 16px;
+}
+
+ul li:hover {
+    background: darkcyan;
+}
+
+nav div {
+    display: inherit;
+}
+
+h1 {
+    color: darkcyan;
+}
