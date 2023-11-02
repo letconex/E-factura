@@ -1,2 +1,3 @@
 # E-factura
 Proiect GeneratiaTech
+Nu este destinat unui mediu productiv, este doar un proiect de test în lucru...

@@ -1,3 +1,52 @@
+async function totalfirme(cui) {
+   const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.7,ro;q=0.3",
+    "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": "application/json",
+    "Alt-Used": "www.totalfirme.ro",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "Sec-GPC": "1",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache"
+}
+    const data = `{ "query": ${cui} }`
+    // const data = "{\"query\":\"19467555\"}"
+    const url = "https://www.totalfirme.ro/firmelike"
+    // fetch(url, {
+    //     method: 'POST',
+    //     headers: headers,
+    //     body: JSON.stringify(data)
+    // })
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
+    //     .catch((error) => console.error('Error:', error));
+    try {
+        const response = await fetch(url, {
+            "credentials": "include",
+            "headers": headers,
+            "referrer": "https://www.totalfirme.ro/",
+            "body": data,
+            "method": "POST",
+            "mode": "cors"
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log('TVA API Response:', result);
+        return result;
+    } catch (error) {
+        console.log('There was a problem with the connection:', error);
+    }
+}
+// totalfirme(19479100).then(data => console.log(data)) // if not logged inside function
+// totalfirme(19479100) // if logged inside function
+
 function tvaapi(cui) {
     const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
     const headers = {
@@ -44,13 +93,13 @@ async function atvaapi(cui) {
         }
 
         const result = await response.json();
-        console.log('TVA API Response:', result);
+        console.log('TVA API Response:', JSON.stringify(result));
         return result;
     } catch (error) {
         console.log('There was a problem with the fetch operation:', error);
     }
 }
-atvaapi(19479100)
+tvaapi(19479100)
 
 // function getCUI() {
 //     let cuis = document.querySelectorAll('.cui');
@@ -125,3 +174,4 @@ atvaapi(19479100)
 //     console.log(e);
 // })
 // console.log(myApps)
+

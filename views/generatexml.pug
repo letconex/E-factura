@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  script(type='text/javascript', src='/public/javascripts/localstorage.js')
+  h1= title
+  p Generate invoice:
+  form(action="/generatexml", method="post")
+    label(for="input") Enter invoice data: 
+    input(type="text", id="input", name="codfiscal", required)
+    input(type="submit", value="Submit")
+
+  p Codul fiscal căutat: 
+    i #{codfiscal}
+  select
+    each variable in [codfiscal]
+      option(value=variable) #{variable}

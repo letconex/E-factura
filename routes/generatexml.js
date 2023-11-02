@@ -3,8 +3,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    let codurifiscal = "Aici va apărea codul fiscal căutat"
-    res.render('index', { title: 'E-Factura', codurifiscale: codfiscale });
+    let codfiscal = "Aici va apărea codul fiscal căutat"
+    res.render('index', { title: 'E-Factura', codfiscal: codfiscal });
 
 });
 router.post('/', function (req, res, next) {

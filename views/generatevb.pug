@@ -1,0 +1,119 @@
+extends layout
+
+block content
+    script(type='text/javascript', src='/public/javascripts/localstorage.js')
+    h1= title
+    p Generare furnizor/client #{title}
+    p Căutare după CUI:
+    form(action="/generatevb", method="post")
+        label(for="cui") Introduceți codul fiscal: 
+        input(type="text", id="cui", name="lookupcui", required)
+        input(type="submit", value="Submit")
+
+    fieldset
+        legend Furnizor/client
+            form(action="/", method="post")
+            div Câmpurile obligatorii marcate cu *
+                label(for="cui") CUI*: 
+                input(type="text", id="input", name="cui", required)
+                label(for="cui") Denumire*:
+                input(type="text", id="input", name="denumire", required)
+                label(for="cui") Adresa*:
+                input(type="text", id="input", name="adresa", required)
+                input(type="text", id="input", name="nrRegCom", required)
+                input(type="text", id="input", name="telefon", required)
+                input(type="text", id="input", name="fax", required)
+                input(type="text", id="input", name="codPostal", required)
+                input(type="text", id="input", name="act", required)
+                input(type="text", id="input", name="stare_inregistrare", required)
+                input(type="text", id="input", name="data_inregistrare", required)
+                input(type="text", id="input", name="cod_CAEN", required)
+                input(type="text", id="input", name="statusRO_e_Factura", required)
+                input(type="text", id="input", name="organFiscalCompetent", required)
+                input(type="text", id="input", name="statusRO_e_Factura", required)
+                input(type="text", id="input", name="forma_organizare", required)
+                input(type="text", id="input", name="forma_juridica", required)
+
+                input(type="submit", value="Submit")
+//- {
+//-     "cod": 200,
+//-     "message": "SUCCESS",
+//-     "found": [
+//-       {"date_generale": {
+//-           "cui": 19467555,
+//-           "data": "2023-10-27",
+//-           "denumire": "LEON TIBERIU CRISTIAN PERSOANĂ FIZICĂ AUTORIZATĂ",
+//-           "adresa": "JUD. BRAŞOV, MUN. SĂCELE, STR. VALEA CERNATULUI, NR.47",
+//-           "nrRegCom": "F08/388/2003",
+//-           "telefon": "0729947925",
+//-           "fax": "",
+//-           "codPostal": "505600",
+//-           "act": "",
+//-           "stare_inregistrare": "RELUARE ACTIVITATE din data 30.04.2013",
+//-           "data_inregistrare": "2007-01-01",
+//-           "cod_CAEN": "7430",
+//-           "iban": "",
+//-           "statusRO_e_Factura": false,
+//-           "organFiscalCompetent": "Administraţia Judeţeană a Finanţelor Publice Braşov",
+//-           "forma_de_proprietate": "",
+//-           "forma_organizare": "",
+//-           "forma_juridica": ""
+//-         },
+//-         "inregistrare_scop_Tva": {
+//-           "scpTVA": false,
+//-           "perioade_TVA": []
+//-         },
+//-         "inregistrare_RTVAI": {
+//-           "dataInceputTvaInc": "",
+//-           "dataSfarsitTvaInc": "",
+//-           "dataActualizareTvaInc": "",
+//-           "dataPublicareTvaInc": "",
+//-           "tipActTvaInc": "",
+//-           "statusTvaIncasare": false
+//-         },
+//-         "stare_inactiv": {
+//-           "dataInactivare": "",
+//-           "dataReactivare": "",
+//-           "dataPublicare": "",
+//-           "dataRadiere": "",
+//-           "statusInactivi": false
+//-         },
+//-         "inregistrare_SplitTVA": {
+//-           "dataInceputSplitTVA": "",
+//-           "dataAnulareSplitTVA": "",
+//-           "statusSplitTVA": false
+//-         },
+//-         "adresa_sediu_social": {
+//-           "sdenumire_Strada": "Str. Valea Cernatului",
+//-           "snumar_Strada": "47",
+//-           "sdenumire_Localitate": "Mun. Săcele",
+//-           "scod_Localitate": "157",
+//-           "sdenumire_Judet": "BRAŞOV",
+//-           "scod_Judet": "8",
+//-           "scod_JudetAuto": "BV",
+//-           "stara": "",
+//-           "sdetalii_Adresa": "",
+//-           "scod_Postal": "505600"
+//-         },
+//-         "adresa_domiciliu_fiscal": {
+//-           "ddenumire_Strada": "Str. Valea Cernatului",
+//-           "dnumar_Strada": "47",
+//-           "ddenumire_Localitate": "Mun. Săcele",
+//-           "dcod_Localitate": "157",
+//-           "ddenumire_Judet": "BRAŞOV",
+//-           "dcod_Judet": "8",
+//-           "dcod_JudetAuto": "BV",
+//-           "dtara": "",
+//-           "ddetalii_Adresa": "",
+//-           "dcod_Postal": "505600"
+//-         }
+//-       }
+//-     ],
+//-     "notFound": []
+//-   }
+
+    p Codul fiscal căutat:
+        i #{codfiscal}
+    select
+        each variable in [codfiscal]
+            option(value=variable) #{variable}

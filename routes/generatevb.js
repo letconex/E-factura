@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* Generate vendor/customer */
 router.get('/', function (req, res, next) {
-    let codurifiscal = "Aici va apărea codul fiscal căutat"
-    res.render('index', { title: 'E-Factura', codurifiscale: codfiscale });
+    let codfiscal = "Aici va apărea codul fiscal căutat"
+    res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal });
 
 });
 router.post('/', function (req, res, next) {
     let codfiscal = req.body.codfiscal
     console.log('Codfiscal from POST', codfiscal)
-          res.render('index', { title: 'E-Factura', codfiscal: codfiscal })
+          res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal })
 });
 
 router.post('/x', function (req, res) {

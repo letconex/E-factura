@@ -7,21 +7,29 @@ router.get('/', function (req, res, next) {
     res.render('info', { title: 'E-Factura', codfiscal: codfiscal });
 
 });
-router.pogetst('/test/:codfiscal', function (req, res, next) {
-    let codfiscal = req.params.codfiscal
-    console.log('Codfiscal from POST', codfiscal)
-    let items = JSON.parse(localStorage.getItem('items')) || [];
-    localStorage.setItem('items', JSON.stringify(items));
-          res.render('info', { title: 'E-Factura', codfiscal: codfiscal })
+router.get('/test/:cui', function (req, res, next) {
+    let cui = req.params.cui
+    let denumire = req.params.cui
+    let adresa = req.params.cui
+    let nrRegCom = req.params.cui
+    let telefon = req.params.cui
+    let codPostal = req.params.cui
+    let cod_CAEN = req.params.cui
+    let datefirma = {
+        'codfiscal': cui,
+        'denumire': denumire,
+        'adresa': adresa,
+        'nrRegCom': nrRegCom,
+        'telefon': telefon,
+        'codPostal': codPostal,
+        'cod_CAEN': cod_CAEN,
+    }
+    console.log(datefirma, typeof(datefirma))
+        //   res.send({ title: 'E-Factura', datefirma: JSON.stringify(datefirma[0]) })
+          res.send({ title: 'E-Factura', datefirma: datefirma })
 });
 
 router.post('/', function (req, res) {
-    let datefirma = {
-        'cui': name,
-        'nume': parseFloat(price).toFixed(2),
-        'color': color,
-        'quantity': quantity
-    }
     let codfiscal = req.body.codfiscal
     console.log('Codfiscal from POST', codfiscal)
    atvaapi(codfiscal)
@@ -29,7 +37,7 @@ router.post('/', function (req, res) {
             res.render('info', { title: 'E-Factura', codfiscal: data })
         })
         .catch(error => {
-            res.send(error)
+            res.send(JSON.stringify(error))
         })
 });
 
@@ -76,7 +84,7 @@ function tvaapi(cui) {
     })
         .then(response => response.json())
         // .then(data => console.log(data))
-        .catch((error) => console.error('Error:', error));
+        .catch((error) => console.error('Error:', error))
 }
 async function atvaapi(cui) {
     const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
@@ -108,6 +116,35 @@ async function atvaapi(cui) {
         console.log('There was a problem with the fetch operation:', error);
     }
 }
+
+app.post('/', function(req, res) {
+    if (req.body.vendor) {
+       // Vendor form was submitted
+       console.log('Vendor tax code:', req.body.vendor);
+       res.send('Vendor form submitted successfully.');
+    } else if (req.body.buyer) {
+       // Buyer form was submitted
+       console.log('Buyer tax code:', req.body.buyer);
+       res.send('Buyer form submitted successfully.');
+    } else {
+       // Neither form was submitted
+       res.send('Please submit either the vendor or buyer form.');
+    }
+   });
+
 module.exports = router;
 // Then create a route to render the info.pug file. If the view engine property is not set, you must specify the extension of the view file. Otherwise, you can omit it.
-
+// fetch('https://api.example.com/data')
+//   .then(response => {
+//     if (response.ok) {
+//       return response.json();
+//     } else {
+//       throw new Error('Request failed with status code: ' + response.status);
+//     }
+//   })
+//   .then(data => {
+//     console.log(data); // Process the response data
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//   });
