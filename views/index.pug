@@ -4,13 +4,29 @@ block content
     script(type='text/javascript', src='/public/javascripts/localstorage.js')
     h1= title
     p Privire generală #{title}
-    p Facturi:
+    p #{message}
     form(action="/", method="post")
-        label(for="input") Selectează client: 
+        label(for="input") Selectează furnizor/client: 
     select
-        each variable in [codurifiscale]
-            option(value=variable) #{variable}
-        input(type="submit", value="Submit")
+        each vendor in vendordata
+            option(value=vendor.denumire) #{vendor.denumire}
+        input(type="submit", value="Afișează")
 
-    p Codul fiscal căutat: 
-        i #{codurifiscale}
+    p Firme: 
+        each vendor in vendordata
+            i #{vendor.denumire} 
+        table(style='width:100%', border='1')
+            tbody
+                tr(class='vendorshead')
+                    th(class='vendorhead') ID
+                    th(class='vendorhead') CUI
+                    th(class='vendorhead') Denumire
+                    th(class='vendorhead') Adresa
+                    th(class='vendorhead') Registrul Comerțului
+                    each vendor in vendordata
+                        tr(class='vendors')
+                            td(class='vendor') #{vendor._id}
+                            td(class='vendor') #{vendor.cui}
+                            td(class='vendor') #{vendor.denumire}
+                            td(class='vendor') #{vendor.adresa}
+                            td(class='vendor') #{vendor.nrRegCom}

@@ -1,10 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 /* Generate vendor/customer */
 router.get('/', function (req, res, next) {
-    let codfiscal = "Aici va apărea codul fiscal căutat"
-    res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal });
+    let credentials = "Proiect realizat în cadrul programului GeneratiaTech @2023"
+    res.render('generatevb', { title: 'Creare furnizor/client' });
 
 });
 router.post('/', function (req, res, next) {
@@ -13,7 +13,7 @@ router.post('/', function (req, res, next) {
           res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal })
 });
 
-router.post('/x', function (req, res) {
+router.post('/test', function (req, res) {
     let codfiscal = req.body.codfiscal
     console.log('Codfiscal from POST', codfiscal)
    atvaapi(codfiscal)
@@ -76,6 +76,21 @@ async function atvaapi(cui) {
         console.log('There was a problem with the fetch operation:', error);
     }
 }
+
+// app.post('/', function(req, res) {
+//     if (req.body.vendor) {
+//        // Vendor form was submitted
+//        console.log('Vendor tax code:', req.body.vendor);
+//        res.send('Vendor form submitted successfully.');
+//     } else if (req.body.buyer) {
+//        // Buyer form was submitted
+//        console.log('Buyer tax code:', req.body.buyer);
+//        res.send('Buyer form submitted successfully.');
+//     } else {
+//        // Neither form was submitted
+//        res.send('Please submit either the vendor or buyer form.');
+//     }
+//    });
 module.exports = router;
 // Then create a route to render the index.pug file. If the view engine property is not set, you must specify the extension of the view file. Otherwise, you can omit it.
 

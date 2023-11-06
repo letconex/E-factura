@@ -1,27 +1,33 @@
 extends layout
 
 block content
-    script(type='text/javascript', src='/public/javascripts/localstorage.js')
+    script(type='text/javascript', src='../public/javascripts/localstorage.js')
     h1= title
-    p Căutare după CUI în baza de date ANAF:
+    p Generare furnizor/client #{title}
+    p Căutare după CUI:
     form(action="/fetchtva", method="post")
         label(for="cui") Introduceți codul fiscal: 
         input(type="text", id="cui" name="lookupcui", required)
         input(type="submit", value="Căutare CUI")
+    p Câmpurile obligatorii sunt marcate cu *
+    //- pre= JSON.stringify(codfiscal, null, 2)
     form(action="/generatevb", method="post")
         fieldset
             legend Furnizor/client
-            //- pre= JSON.stringify(codfiscal, null, 2)
             p Câmpuri obligatorii: #{JSON.stringify(message, null, 2)}
             div(class="mandatory")
                 label(for="cui") CUI*: 
-                input(type="text" id="cui" name="cui" placeholder="Cod fiscal" title="Cod fiscal" required)
+                input(type="text" id="cui" name="cui" value=codfiscal.found[0].date_generale.cui title="Cod fiscal" required)
+                //- input(type="text" id="cui" name="cui" value=codfiscal[0].cui title="Cod fiscal" required)
                 label(for="denumire") Denumire*: 
-                input(type="text", id="denumire" name="denumire" placeholder="Denumirea firmei" title="Denumirea firmei", required)
+                input(type="text", id="denumire" name="denumire" value=codfiscal.found[0].date_generale.denumire title="Denumirea firmei", required)
+                //- input(type="text", id="denumire" name="denumire" value=codfiscal[0].nume title="Denumirea firmei", required)
                 label(for="adresa") Adresa*: 
-                input(type="text", id="adresa" name="adresa" placeholder="Adresa firmei" title="Adresa firmei", required)
+                input(type="text", id="adresa" name="adresa" value=codfiscal.found[0].date_generale.adresa title="Adresa firmei", required)
+                //- input(type="text", id="adresa" name="adresa" value=codfiscal[0].adresa title="Adresa firmei", required)
                 label(for="nrRegCom") Registrul Comerțului*: 
-                input(type="text", id="nrRegCom" name="nrRegCom" placeholder="Registrul Comerțului" title="Număr de înregistrare în Registrul Comerțului", required)
+                input(type="text", id="nrRegCom" name="nrRegCom" value=codfiscal.found[0].date_generale.nrRegCom title="Număr Registrul Comerțului", required)
+                //- input(type="text", id="nrRegCom" name="nrRegCom" value=codfiscal[0].regcom title="Număr Registrul Comerțului", required)
             p Câmpuri facultative:
             div(class="optional")
                 label(for="telefon") Telefon: 
@@ -62,7 +68,6 @@ block content
                     option(value="vendor") Furnizor
                     option(value="client") Client
                 input(type="submit", value="Salvare")
-    p Credentials: #{credentials}
 //- {
 //-     "cod": 200,
 //-     "message": "SUCCESS",

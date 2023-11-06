@@ -1,16 +1,22 @@
 extends layout
 
 block content
-  script(type='text/javascript', src='/public/javascripts/localstorage.js')
-  h1= title
-  p Generate invoice:
-  form(action="/generatexml", method="post")
-    label(for="input") Enter invoice data: 
-    input(type="text", id="input", name="codfiscal", required)
-    input(type="submit", value="Submit")
+    //- script(type='text/javascript', src='/public/javascripts/gettva.js')
+    h1= title
 
-  p Codul fiscal căutat: 
-    i #{codfiscal}
-  select
-    each variable in [codfiscal]
-      option(value=variable) #{variable}
+    p Selectați furnizorul și clientul (dacă nu există, generați): 
+        i #{codfiscal}
+    select
+        each variable in [codfiscal]
+            option(value=variable) #{variable}
+        select
+        each variable in [codfiscal]
+            option(value=variable) #{variable}
+        p Generați factura în format XML:
+    form(action="/generatexml", method="post")
+        label(for="input") Enter invoice data: 
+        input(type="text", id="input", name="codfiscal", required)
+        input(type="submit", value="Submit")
+
+    a(href="/images/logo.jpg" download="logo")
+        img(src="/images/myw3schoolsimage.jpg" alt="W3Schools" width="104" height="142")

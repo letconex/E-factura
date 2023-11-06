@@ -1,81 +1,57 @@
-var express = require('express');
-var router = express.Router();
-
+const express = require('express');
+const router = express.Router();
+// const connection = require('../app');
+const Vendormodel = require('../public/javascripts/mongoose');
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    let codurifiscal = "Aici va apărea codul fiscal căutat"
-    res.render('index', { title: 'E-Factura', codurifiscale: codfiscale });
-
+    let message = "Afișare furnizor/client"
+    Vendormodel.find({ '__v': 0 })
+        .then(vendors => {
+            console.log('Number of vendors', vendors.length)
+            res.render('index', { title: 'E-Factura', message: message, vendordata: vendors })
+        })
+        .catch(err => {
+            console.log('Error accessing vendors:', err)
+            message = 'Eroare accesare bază de date'
+            res.render('index', { title: 'E-Factura', message: message, vendordata: vendors })
+        })
 });
 router.post('/', function (req, res, next) {
-    let codfiscal = req.body.codfiscal
-    console.log('Codfiscal from POST', codfiscal)
-          res.render('index', { title: 'E-Factura', codfiscal: codfiscal })
+    let vendordata = req.body.vendordata
+    console.log('vendordata from POST', vendordata)
+    res.render('index', { title: 'E-Factura', vendordata: vendordata })
 });
 
 router.post('/x', function (req, res) {
-    let codfiscal = req.body.codfiscal
-    console.log('Codfiscal from POST', codfiscal)
-   atvaapi(codfiscal)
+    let vendordata = req.body.vendordata
+    console.log('vendordata from POST', vendordata)
+    atvaapi(vendordata)
         .then(data => {
-            res.render('index', { title: 'E-Factura', codfiscal: data })
+            res.render('index', { title: 'E-Factura', vendordata: data })
         })
         .catch(error => {
             res.send(error)
         })
 });
 
-function tvaapi(cui) {
-    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
-    const headers = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
-        'Connection': 'keep-alive',
-        'Referer': 'https://mfinante.gov.ro',
-        'Content-Type': 'application/json',
-    };
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [{ 'cui': cui, 'data': today }];
-
-    return fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        // .then(data => console.log(data))
-        .catch((error) => console.error('Error:', error));
-}
-async function atvaapi(cui) {
-    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
-    const headers = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
-        'Connection': 'keep-alive',
-        'Referer': 'https://mfinante.gov.ro',
-        'Content-Type': 'application/json',
-    };
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [{ 'cui': cui, 'data': today }];
-
+router.get("/vendors", async (request, response) => {
+    const users = await userModel.find({});
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('TVA API Response:', result);
-        return result;
+        response.send(users);
     } catch (error) {
-        console.log('There was a problem with the fetch operation:', error);
+        response.status(500).send(error);
     }
-}
+});
+router.post("/add_user", async (request, response) => {
+    const user = new userModel(request.body); // request in json format
+    try {
+        await user.save();
+        response.send(user);
+    } catch (error) {
+        response.status(500).send(error);
+    }
+});
 module.exports = router;
-// Then create a route to render the index.pug file. If the view engine property is not set, you must specify the extension of the view file. Otherwise, you can omit it.
+
+// If the view engine property is not set, you must specify the extension of the view file. Otherwise, you can omit it.
 

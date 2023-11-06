@@ -1,69 +1,38 @@
-const express = require('express');
-const router = express.Router();
-const app = require('../app');
-const { Vendormodel } = require('../public/javascripts/mongoose');
+var express = require('express');
+var router = express.Router();
 
-router.post('/', async (req, res, next) => {
-    try {
-        let cui = req.body.lookupcui;
-        let data = await atvaapi(cui);
-        const newvendor = new Vendormodel({ cui: data.cui, denumire: data.denumire, adresa: data.adresa, nrRegCom: data.nrRegCom });
-        console.log(newvendor);
-        // await newvendor.save();
-        res.render('fetchtva', { title: 'Fetch TVA', message: cui, codfiscal: data })
-    } catch (error) {
-        console.log(error)
-        res.render('generatevb', { title: 'Creare furnizor/client', message: 'Eroare la apelarea serviciului ANAF! Încercați mai târziu sau introduceți datele manual.' });
-    }
+router.post('/', function (req, res, next) {
+    let codfiscal = req.body.lookupcui
+    console.log('Codfiscal from POST', codfiscal)
+          res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal })
 });
 
-// totalfirme(cui).then(data => res.render('fetchtva', { title: 'E-Factura', codfiscal: data }))
-
-function tvaapi(cui) {
-    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
-    const headers = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
-        'Connection': 'keep-alive',
-        'Referer': 'https://mfinante.gov.ro',
-        'Content-Type': 'application/json',
-    };
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [{ 'cui': cui, 'data': today }];
-
-    return fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(datarec => {
-            console.log(datarec);
-            return datarec;  // return the data instead of logging it
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            throw error;
-        });
-}
-
 async function totalfirme(cui) {
-    const headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0",
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.7,ro;q=0.3",
-        "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": "application/json",
-        "Alt-Used": "www.totalfirme.ro",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-GPC": "1",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache"
-    }
+   const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.7,ro;q=0.3",
+    "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": "application/json",
+    "Alt-Used": "www.totalfirme.ro",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "Sec-GPC": "1",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache"
+}
     const data = `{ "query": ${cui} }`
+    // const data = "{\"query\":\"19467555\"}"
     const url = "https://www.totalfirme.ro/firmelike"
+    // fetch(url, {
+    //     method: 'POST',
+    //     headers: headers,
+    //     body: JSON.stringify(data)
+    // })
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
+    //     .catch((error) => console.error('Error:', error));
     try {
         const response = await fetch(url, {
             "credentials": "include",
@@ -86,6 +55,28 @@ async function totalfirme(cui) {
 }
 // totalfirme(19479100).then(data => console.log(data)) // if not logged inside function
 // totalfirme(19479100) // if logged inside function
+
+function tvaapi(cui) {
+    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
+    const headers = {
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
+        'Connection': 'keep-alive',
+        'Referer': 'https://mfinante.gov.ro',
+        'Content-Type': 'application/json',
+    };
+    const today = new Date().toISOString().slice(0, 10);
+    const data = [{ 'cui': cui, 'data': today }];
+
+    return fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch((error) => console.error('Error:', error));
+}
 
 async function atvaapi(cui) {
     const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
@@ -117,6 +108,7 @@ async function atvaapi(cui) {
         console.log('There was a problem with the fetch operation:', error);
     }
 }
+// tvaapi(19479100)
 module.exports = router;
 // function getCUI() {
 //     let cuis = document.querySelectorAll('.cui');
@@ -130,12 +122,29 @@ module.exports = router;
 //         }
 //     }
 // }
+// getCUI();
+// let x;
+// tvaapi(19467555)
+//     .then(response => {
+//         x = response;
+//         console.log(x);
+//     })
+//     .catch(error => console.error('Error:', error));
 
 // async function getData() {
 //     let x = await tvaapi(19467555).then(response => {
 //                 return response});
 //     return response;
 // }
+// yyy = getData();
+// console.log(yyy)
+
+// const getDatax = async () => {
+//     let aaa = await getData();
+//     return aaa
+// }
+
+// console.log(getDatax())
 
 // const loadPosts = async (cui) => {
 //     const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
@@ -163,4 +172,15 @@ module.exports = router;
 
 // };
 
+// let myApps
+
+// loadPosts(18467555).then((data) => {
+//     // the network request is completed
+//     myApps = data;
+//     //  console.log(myApps);
+// }).catch((e) => {
+//     // Network request has failed
+//     console.log(e);
+// })
+// console.log(myApps)
 
