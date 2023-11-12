@@ -2,8 +2,7 @@ extends layout
 
 block content
     script(type='text/javascript', src='/public/javascripts/localstorage.js')
-    h1= title
-    p Căutare după CUI în baza de date ANAF:
+    p.message #{message}
     form(action="/fetchtva", method="post")
         label(for="cui") Introduceți codul fiscal: 
         input(type="text", id="cui" name="lookupcui", required)
@@ -11,56 +10,73 @@ block content
     form(action="/generatevb", method="post")
         fieldset
             legend Furnizor/client
-            //- pre= JSON.stringify(codfiscal, null, 2)
-            p Câmpuri obligatorii: #{JSON.stringify(message, null, 2)}
-            div(class="mandatory")
-                label(for="cui") CUI*: 
-                input(type="text" id="cui" name="cui" placeholder="Cod fiscal" title="Cod fiscal" required)
-                label(for="denumire") Denumire*: 
-                input(type="text", id="denumire" name="denumire" placeholder="Denumirea firmei" title="Denumirea firmei", required)
-                label(for="adresa") Adresa*: 
-                input(type="text", id="adresa" name="adresa" placeholder="Adresa firmei" title="Adresa firmei", required)
-                label(for="nrRegCom") Registrul Comerțului*: 
-                input(type="text", id="nrRegCom" name="nrRegCom" placeholder="Registrul Comerțului" title="Număr de înregistrare în Registrul Comerțului", required)
+            //- pre= JSON.stringify(taxdata, null, 2)
+            p Câmpuri obligatorii:
+            div.mandatory#divmandatory
+                div(class="taxdatagroup")
+                    label(for="cui") CUI*: 
+                    input(type="text" id="cui" name="cui" placeholder="Cod fiscal" title="Cod fiscal" required)
+                    label(for="denumire") Denumire*: 
+                    input(type="text", id="denumire" name="denumire" placeholder="Denumirea firmei" title="Denumirea firmei", required)
+                    label(for="adresa") Adresa*: 
+                    input(type="text", id="adresa" name="adresa" placeholder="Adresa firmei" title="Adresa firmei", required)
+                    label(for="nrRegCom") Registrul Comerțului*: 
+                    input(type="text", id="nrRegCom" name="nrRegCom" placeholder="Registrul Comerțului" title="Număr de înregistrare în Registrul Comerțului", required)
             p Câmpuri facultative:
-            div(class="optional")
-                label(for="telefon") Telefon: 
-                input(type="text", id="telefon" name="telefon" title="Număr de telefon")
-                label(for="fax") Fax: 
-                input(type="text", id="fax" name="fax" title="Număr de fax")
-                label(for="email") E-mail: 
-                input(type="text", id="email" name="email" title="Adresă de e-mail")
-                label(for="web") WEB: 
-                input(type="text", id="web" name="web" title="Adresă site Internet")
-                label(for="codPostal") Cod poștal: 
-                input(type="text", id="codPostal" name="codPostal" title="Cod poștal")
-                label(for="act") Act de constituire: 
-                input(type="text", id="act" name="act" title="Act de constituire")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="stare_inregistrare")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="data_inregistrare")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="cod_CAEN")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="statusRO_e_Factura")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="organFiscalCompetent")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="statusRO_e_Factura")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="forma_organizare")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="forma_juridica")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="inregistrare_scop_Tva")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="adresa_sediu_social")
-                label(for="telefon") Telefon: 
-                input(type="text", id="input" name="input" title="adresa_domiciliu_fiscal")
-                select(name="vendorclient" title="Salvați ca furnizor sau client")
-                    option(value="vendor") Furnizor
-                    option(value="client") Client
+            div.optional#divoptional
+                div(class="taxdatagroup")
+                    label(for="telefon") Telefon: 
+                    input(type="text", id="telefon" name="telefon" placeholder="Număr de telefon" title="Număr de telefon")
+                    label(for="fax") Fax: 
+                    input(type="text", id="fax" name="fax" placeholder="Număr de fax" title="Număr de fax")
+                    label(for="codPostal") Cod poștal: 
+                    input(type="text", id="codPostal" name="codPostal" placeholder="Cod poștal" title="Cod poștal")
+                    label(for="act") Act de constituire: 
+                    input(type="text", id="act" name="act" placeholder="Act de constituire" title="Act de constituire")
+                div(class="taxdatagroup")
+                    label(for="stare_inregistrare") Stare înregistrare: 
+                    input(type="text", id="stare_inregistrare" name="stare_inregistrare" placeholder="Stare înregistrare firmă" title="Stare înregistrare firmă")
+                    label(for="data_inregistrare") Data înregistrării: 
+                    input(type="text", id="data_inregistrare" name="data_inregistrare" placeholder="Data înregistrării" title="Data înregistrării")
+                    label(for="cod_CAEN") Cod CAEN: 
+                    input(type="text", id="cod_CAEN" name="cod_CAEN" placeholder="Cod CAEN" title="Cod CAEN")
+                    label(for="iban") IBAN: 
+                    input(type="text", id="iban" name="iban" placeholder="Cod IBAN" title="Cod IBAN")
+                div(class="taxdatagroup")
+                    label(for="statusRO_e_Factura") Stare E-Factura: 
+                    input(type="text", id="statusRO_e_Factura" name="statusRO_e_Factura" placeholder="Stare înregistrare E-Factura" title="Stare înregistrare E-Factura")
+                    label(for="organFiscalCompetent") Organ fiscal competent: 
+                    input(type="text", id="organFiscalCompetent" name="organFiscalCompetent" placeholder="Organ fiscal competent" title="Organ fiscal competent")
+                    label(for="forma_de_proprietate") Formă de proprietate: 
+                    input(type="text", id="forma_de_proprietate" name="forma_de_proprietate" placeholder="Formă de proprietate" title="Formă de proprietate")
+                    label(for="forma_organizare") Formă de organizare: 
+                    input(type="text", id="forma_organizare" name="forma_organizare" placeholder="Formă de organizare" title="Formă de organizare")
+                div(class="taxdatagroup")
+                    label(for="forma_juridica") Formă juridică: 
+                    input(type="text", id="forma_juridica" name="forma_juridica" placeholder="Formă juridică" title="Formă juridică")
+                    label(for="scpTVA") Înregistrare in scop TVA: 
+                    input(type="text", id="scpTVA" name="scpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                    label(for="statusTvaIncasare") Înregistrare RTVAI: 
+                    input(type="text", id="statusTvaIncasare" name="statusTvaIncasare" placeholder="Înregistrare RTVAI" title="Înregistrare RTVAI")
+                    label(for="stare_inactiv") Stare inactivi: 
+                    input(type="text", id="stare_inactiv" name="stare_inactiv" placeholder="Stare inactivi" title="Stare inactivi")
+                div(class="taxdatagroup")
+                    label(for="statusSplitTVA") Înregistrare Split TVA: 
+                    input(type="text", id="statusSplitTVA" name="statusSplitTVA" placeholder="Înregistrare Split TVA" title="Înregistrare Split TVA")
+                    label(for="email") E-mail: 
+                    input(type="text", id="email" name="email" placeholder="Adresă de e-mail" title="Adresă de e-mail")
+                    label(for="web") WEB: 
+                    input(type="text", id="web" name="web" placeholder="Adresă Internet" title="Adresă Internet")
+                    label(for="comments") Comentarii: 
+                    input(type="text", id="comments" name="comments" placeholder="Comentarii" title="Comentarii")
+                label(for="radiovendor") Furnizor 
+                input(type='radio', id='radiovendor' name='vb', value ='vendor' checked)
+                label(for="radiobuyer") Client 
+                input(type='radio', id='radiobuyer' name='vb', value ='buyer')
+                select(id="selectvendorclient" name="vendorclient" title="Creare sau modificare")
+                    option(value="createvb") Creare
+                    option(value="editvb") Modificare
+                    option(value="deletevb") Ștergere
                 input(type="submit", value="Salvare")
     p Credentials: #{credentials}
 //- {
@@ -141,7 +157,7 @@ block content
 //-   }
 
     p Codul fiscal căutat:
-        i #{codfiscal}
+        i #{taxdata}
     select
-        each variable in [codfiscal]
+        each variable in [taxdata]
             option(value=variable) #{variable}

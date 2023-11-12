@@ -1,23 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const app = require('../app');
-const { Vendormodel } = require('../public/javascripts/mongoose');
+const Vendormodel = require('../public/javascripts/mongoose');
 
 router.post('/', async (req, res, next) => {
     try {
         let cui = req.body.lookupcui;
-        let data = await atvaapi(cui);
-        const newvendor = new Vendormodel({ cui: data.cui, denumire: data.denumire, adresa: data.adresa, nrRegCom: data.nrRegCom });
+        let taxdata = await atvaapi(cui);
+        date_generale = taxdata.found[0].date_generale;
+        console.log(JSON.stringify(taxdata));
+        const newvendor = new Vendormodel({
+            cui: date_generale.cui,
+            denumire: date_generale.denumire,
+            adresa: date_generale.adresa,
+            nrRegCom: date_generale.nrRegCom,
+            telefon: date_generale.telefon
+        });
         console.log(newvendor);
-        // await newvendor.save();
-        res.render('fetchtva', { title: 'Fetch TVA', message: cui, codfiscal: data })
+        try {
+            await newvendor.save()
+            res.render('fetchtva', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
+        } catch (error) {
+            if (error.code === 11000) {
+                res.render('fetchtva', { title: 'Căutare firmă', message: 'Firma există deja în baza de date', taxdata: taxdata })
+            } else {
+                console.error(error)
+                res.status(500).send('Eroare la salvarea în baza de date')
+            }
+        }
+        res.render('fetchtva', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
     } catch (error) {
         console.log(error)
         res.render('generatevb', { title: 'Creare furnizor/client', message: 'Eroare la apelarea serviciului ANAF! Încercați mai târziu sau introduceți datele manual.' });
     }
 });
 
-// totalfirme(cui).then(data => res.render('fetchtva', { title: 'E-Factura', codfiscal: data }))
+// totalfirme(cui).then(data => res.render('fetchtva', { title: 'E-Factura', taxdata: data }))
+//- input(type="text" id="cui" name="cui" value=codfiscal[0].cui title="Cod fiscal" required)
 
 function tvaapi(cui) {
     const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
@@ -78,7 +97,7 @@ async function totalfirme(cui) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const result = await response.json();
-        console.log('TVA API Response:', result);
+        // console.log('TVA API Response:', result);
         return result;
     } catch (error) {
         console.log('There was a problem with the connection:', error);
@@ -111,7 +130,7 @@ async function atvaapi(cui) {
         }
 
         const result = await response.json();
-        console.log('TVA API Response:', JSON.stringify(result));
+        // console.log('Async TVA API response:', JSON.stringify(result));
         return result;
     } catch (error) {
         console.log('There was a problem with the fetch operation:', error);

@@ -2,20 +2,18 @@ extends layout
 
 block content
     //- script(type='text/javascript', src='/public/javascripts/gettva.js')
-    h1= title
-
-    p Selectați furnizorul și clientul (dacă nu există, generați): 
-        i #{codfiscal}
+    p.message #{message}
+        i #{taxdata}
     select
-        each variable in [codfiscal]
+        each variable in [taxdata]
             option(value=variable) #{variable}
         select
-        each variable in [codfiscal]
+        each variable in [taxdata]
             option(value=variable) #{variable}
-        p Generați factura în format XML:
+    p Generați factura în format XML:
     form(action="/generatexml", method="post")
         label(for="input") Enter invoice data: 
-        input(type="text", id="input", name="codfiscal", required)
+        input(type="text", id="input", name="taxdata", required)
         input(type="submit", value="Submit")
 
     a(href="/images/logo.jpg" download="logo")

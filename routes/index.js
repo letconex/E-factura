@@ -1,25 +1,25 @@
 const express = require('express');
 const router = express.Router();
 // const connection = require('../app');
-const Vendormodel = require('../public/javascripts/mongoose');
+const {Vendormodel} = require('../public/javascripts/mongoose');
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async (req, res, next) => {
     let message = "Afișare furnizor/client"
-    Vendormodel.find({ '__v': 0 })
+    await Vendormodel.find({ '__v': 0 })
         .then(vendors => {
             console.log('Number of vendors', vendors.length)
-            res.render('index', { title: 'E-Factura', message: message, vendordata: vendors })
+            res.render('index', { title: 'Privire de ansamblu', message: message, vendordata: vendors })
         })
         .catch(err => {
             console.log('Error accessing vendors:', err)
             message = 'Eroare accesare bază de date'
-            res.render('index', { title: 'E-Factura', message: message, vendordata: vendors })
+            res.render('index', { title: 'Privire de ansamblu', message: message, vendordata: vendors })
         })
 });
 router.post('/', function (req, res, next) {
     let vendordata = req.body.vendordata
     console.log('vendordata from POST', vendordata)
-    res.render('index', { title: 'E-Factura', vendordata: vendordata })
+    res.render('index', { title: 'Privire de ansamblu', vendordata: vendordata })
 });
 
 router.post('/x', function (req, res) {
@@ -27,7 +27,7 @@ router.post('/x', function (req, res) {
     console.log('vendordata from POST', vendordata)
     atvaapi(vendordata)
         .then(data => {
-            res.render('index', { title: 'E-Factura', vendordata: data })
+            res.render('index', { title: 'Privire de ansamblu', vendordata: data })
         })
         .catch(error => {
             res.send(error)

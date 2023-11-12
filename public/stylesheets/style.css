@@ -2,6 +2,8 @@ body {
     margin: 0px;
     padding: 0px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    color: darkslateblue;
+    background-color: azure;
 }
 
 a {
@@ -17,6 +19,8 @@ ul {
     padding: 0px;
     list-style: none;
     text-align: left;
+    justify-content: space-between;
+    display: flex;
 }
 
 ul li {
@@ -25,22 +29,72 @@ ul li {
     padding: 6px;
 }
 
-ul li a {
+ul li a.nav-link {
     text-transform: uppercase;
-    color: #fff;
+    color: darkcyan;
     text-decoration: none;
     display: block;
     padding: 16px;
 }
 
-ul li:hover {
+ul li a.nav-link:hover {
     background: darkcyan;
+    color: white;
+    border-radius: 8px;
+}
+
+ul li:last-child {
+    background: lightskyblue;
+    color: darkslateblue;
+    text-align: center;
+    flex: 1;
 }
 
 nav div {
     display: inherit;
 }
 
+input {
+    margin: 1px;
+    border-radius: 4px;
+}
+
 h1 {
     color: darkcyan;
+}
+
+.message {
+    font-style: oblique;
+}
+
+fieldset {
+    background-color: azure;
+    border-radius: 4px;
+}
+
+div.mandatory, div.optional {
+    background-color: lightblue;
+    border-radius: 3px;
+}
+
+.taxdatagroup {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    flex-flow: row;
+    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100%;
+}
+
+.taxdatagroup input {
+    flex: 1 1 15%;
+    margin: 1px;
+    border-radius: 4px;
+}
+
+.taxdatagroup label {
+    flex: 1 0 10%;
+    margin: 1px;
 }

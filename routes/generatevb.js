@@ -1,81 +1,35 @@
 const express = require('express');
 const router = express.Router();
+const Vendormodel = require('../public/javascripts/mongoose');
 
-/* Generate vendor/customer */
-router.get('/', function (req, res, next) {
-    let credentials = "Proiect realizat în cadrul programului GeneratiaTech @2023"
-    res.render('generatevb', { title: 'Creare furnizor/client' });
-
-});
-router.post('/', function (req, res, next) {
-    let codfiscal = req.body.codfiscal
-    console.log('Codfiscal from POST', codfiscal)
-          res.render('generatevb', { title: 'E-Factura', codfiscal: codfiscal })
+// Show generate vendor/customer form
+router.get('/', async (req, res) => {
+    res.render('generatevb', { title: 'Generare furnizor/client', message: 'Căutare după CUI în baza de date ANAF:' });
 });
 
-router.post('/test', function (req, res) {
-    let codfiscal = req.body.codfiscal
-    console.log('Codfiscal from POST', codfiscal)
-   atvaapi(codfiscal)
-        .then(data => {
-            res.render('index', { title: 'E-Factura', codfiscal: data })
-        })
-        .catch(error => {
-            res.send(error)
-        })
-});
-
-function tvaapi(cui) {
-    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
-    const headers = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
-        'Connection': 'keep-alive',
-        'Referer': 'https://mfinante.gov.ro',
-        'Content-Type': 'application/json',
-    };
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [{ 'cui': cui, 'data': today }];
-
-    return fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        // .then(data => console.log(data))
-        .catch((error) => console.error('Error:', error));
-}
-async function atvaapi(cui) {
-    const url = 'https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva';
-    const headers = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.7,ro;q=0.3',
-        'Connection': 'keep-alive',
-        'Referer': 'https://mfinante.gov.ro',
-        'Content-Type': 'application/json',
-    };
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [{ 'cui': cui, 'data': today }];
-
+// Generate vendor/customer
+router.post('/', async (req, res, next) => {
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        let data = req.body
+        console.log('taxdata from POST', data)
+        const newvendor = new Vendormodel({ cui: data.cui, denumire: data.denumire, adresa: data.adresa, nrRegCom: data.nrRegCom });
+        try {
+            await newvendor.save()
+            res.render('generatevb', { title: 'Creare furnizor/client', message: cui, taxdata: data })
+        } catch (error) {
+            if (error.code === 11000) {
+                res.render('generatevb', { title: 'Creare furnizor/client', message: 'Firma există deja în baza de date', taxdata: data })
+            } else {
+                console.error(error)
+                res.status(500).send('Eroare la salvarea în baza de date')
+            }
         }
-
-        const result = await response.json();
-        console.log('TVA API Response:', result);
-        return result;
+        res.render('generatevb', { title: 'Creare furnizor/client', message: cui, taxdata: data })
     } catch (error) {
-        console.log('There was a problem with the fetch operation:', error);
+        console.log(error)
+        res.render('generatevb', { title: 'Creare furnizor/client', message: 'Eroare la apelarea serviciului ANAF! Încercați mai târziu sau introduceți datele manual.' });
     }
-}
+});
 
 // app.post('/', function(req, res) {
 //     if (req.body.vendor) {
@@ -91,6 +45,17 @@ async function atvaapi(cui) {
 //        res.send('Please submit either the vendor or buyer form.');
 //     }
 //    });
-module.exports = router;
-// Then create a route to render the index.pug file. If the view engine property is not set, you must specify the extension of the view file. Otherwise, you can omit it.
 
+router.post('/test', function (req, res) {
+    let taxdata = req.body.taxdata
+    console.log('taxdata from POST', taxdata)
+   atvaapi(taxdata)
+        .then(data => {
+            res.render('index', { title: 'E-Factura', taxdata: data })
+        })
+        .catch(error => {
+            res.send(error)
+        })
+});
+
+module.exports = router;

@@ -2,9 +2,7 @@ extends layout
 
 block content
     script(type='text/javascript', src='/public/javascripts/localstorage.js')
-    h1= title
-    p Privire generală #{title}
-    p #{message}
+    p.message #{message}
     form(action="/", method="post")
         label(for="input") Selectează furnizor/client: 
     select
@@ -19,14 +17,14 @@ block content
             tbody
                 tr(class='vendorshead')
                     th(class='vendorhead') ID
-                    th(class='vendorhead') CUI
                     th(class='vendorhead') Denumire
-                    th(class='vendorhead') Adresa
+                    th(class='vendorhead') CUI
                     th(class='vendorhead') Registrul Comerțului
+                    th(class='vendorhead') Adresa
                     each vendor in vendordata
                         tr(class='vendors')
                             td(class='vendor') #{vendor._id}
-                            td(class='vendor') #{vendor.cui}
                             td(class='vendor') #{vendor.denumire}
-                            td(class='vendor') #{vendor.adresa}
+                            td(class='vendor') #{vendor.cui}
                             td(class='vendor') #{vendor.nrRegCom}
+                            td(class='vendor') #{vendor.adresa}

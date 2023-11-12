@@ -6,17 +6,30 @@ const vendorschema = new Schema({
     denumire: { type: String, required: true, unique: true },
     adresa: { type: String, required: true, unique: true },
     nrRegCom: { type: String, required: true, unique: true },
+    telefon: { type: String },
+    fax: { type: String },
+    codPostal: { type: Number },
+    act: { type: String },
+    stare_inregistrare: { type: String },
+    data_inregistrare: { type: String },
+    cod_CAEN: { type: String },
+    iban: { type: String },
+    statusRO_e_Factura: { type: Boolean },
+    organFiscalCompetent: { type: Boolean },
+    forma_de_proprietate: { type: Boolean },
+    forma_organizare: { type: Boolean },
+    forma_juridica: { type: Boolean },
 });
 // createdAt: {type: Date, default: Date.now}
 const Vendormodel = mongoose.model('Vendor', vendorschema);
-const newvendor = new Vendormodel({ cui: '1', denumire: 'Firma1', adresa: 'adresa1', nrRegCom: 'nrRegCom1' });
+const newvendor = new Vendormodel({ cui: '1', denumire: 'Firma1', adresa: 'adresa1', nrRegCom: 'nrRegCom1', telefon: '0729947926' });
 // console.log(newvendor);
 // const uri = 'mongodb://127.0.0.1:27017/e-factura?tls=false'
 // mongoose.connect(uri);
 // const connection = mongoose.connection;
 // newvendor.save()
-    // .then((newvendor) => console.log('Successfully added vendor:', newvendor))
-    // .catch(err => console.log('Failed to add vendor: ', err))
+// .then((newvendor) => console.log('Successfully added vendor:', newvendor))
+// .catch(err => console.log('Failed to add vendor: ', err))
 //  .finally(() => {
 //     connection.close()
 //     console.log('MongoDB connection closed')
@@ -32,12 +45,12 @@ async function conmongodb(uri) {
     await newvendor.save()
         .then((newvendor) => console.log('Successfully added vendor:', newvendor))
         .catch(err => console.log('Failed to add vendor: ', err))
-        // .finally(() => {
-        //     connection.close()
-        //     console.log('MongoDB connection closed')
-        // })
+    // .finally(() => {
+    //     connection.close()
+    //     console.log('MongoDB connection closed')
+    // })
     // await Vendormodel.find({}, {'denumire': 1, '_id': 0 })
-    await Vendormodel.find({'__v' : 0})
+    await Vendormodel.find({ '__v': 0 })
         .then(vendors =>
             vendors.forEach(x => console.log(x)))
         // .then(vendors => {
@@ -66,7 +79,34 @@ async function conmongodb(uri) {
 //   connection.close()
 // });
 
-module.exports = Vendormodel;
+// module.exports = { Vendormodel, vendorschema };
+exports.Vendormodel = Vendormodel
+exports.vendorschema = vendorschema
+
+// https://mongoosejs.com/docs/models.html#compiling
+const AddressSchema = mongoose.Schema({
+    city: String,
+    street: String,
+    houseNumber: String,
+});
+
+const ContactInfoSchema = mongoose.Schema({
+    tel: [Number],
+    email: [String],
+    address: {
+        type: AddressSchema,
+        required: true,
+    },
+});
+
+const CustomerSchema = mongoose.Schema({
+    firstName: String,
+    lastName: String,
+    company: String,
+    connectInfo: ContactInfoSchema,
+});
+
+const CustomerModel = mongoose.model("Customer", CustomerSchema);
 
 /*
 // module.exports = mongoose.model("Vendor", vendorschema);
