@@ -1,34 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const app = require('../app');
-const Vendormodel = require('../public/javascripts/mongoose');
+const { Vendormodel } = require('../public/javascripts/mongoose');
 
 router.post('/', async (req, res, next) => {
     try {
         let cui = req.body.lookupcui;
         let taxdata = await atvaapi(cui);
-        date_generale = taxdata.found[0].date_generale;
         console.log(JSON.stringify(taxdata));
-        const newvendor = new Vendormodel({
-            cui: date_generale.cui,
-            denumire: date_generale.denumire,
-            adresa: date_generale.adresa,
-            nrRegCom: date_generale.nrRegCom,
-            telefon: date_generale.telefon
-        });
-        console.log(newvendor);
         try {
-            await newvendor.save()
             res.render('fetchtva', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
         } catch (error) {
-            if (error.code === 11000) {
-                res.render('fetchtva', { title: 'Căutare firmă', message: 'Firma există deja în baza de date', taxdata: taxdata })
-            } else {
-                console.error(error)
-                res.status(500).send('Eroare la salvarea în baza de date')
-            }
+            console.error(error)
+            res.status(500).send(`Eroare la afișarea datelor TVA: ${error}`)
         }
-        res.render('fetchtva', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
     } catch (error) {
         console.log(error)
         res.render('generatevb', { title: 'Creare furnizor/client', message: 'Eroare la apelarea serviciului ANAF! Încercați mai târziu sau introduceți datele manual.' });

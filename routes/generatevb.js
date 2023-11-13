@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Vendormodel = require('../public/javascripts/mongoose');
+const { Vendormodel } = require('../public/javascripts/mongoose');
 
 // Show generate vendor/customer form
 router.get('/', async (req, res) => {
@@ -15,19 +15,19 @@ router.post('/', async (req, res, next) => {
         const newvendor = new Vendormodel({ cui: data.cui, denumire: data.denumire, adresa: data.adresa, nrRegCom: data.nrRegCom });
         try {
             await newvendor.save()
-            res.render('generatevb', { title: 'Creare furnizor/client', message: cui, taxdata: data })
+            res.render('generatevb', { title: 'Creare furnizor/client', message: data.cui, taxdata: data })
         } catch (error) {
             if (error.code === 11000) {
                 res.render('generatevb', { title: 'Creare furnizor/client', message: 'Firma există deja în baza de date', taxdata: data })
             } else {
                 console.error(error)
-                res.status(500).send('Eroare la salvarea în baza de date')
+                res.status(500).send(`Eroare la salvarea în baza de date: ${error}`)
             }
         }
-        res.render('generatevb', { title: 'Creare furnizor/client', message: cui, taxdata: data })
+        res.render('generatevb', { title: 'Creare furnizor/client', message: data.cui, taxdata: data })
     } catch (error) {
         console.log(error)
-        res.render('generatevb', { title: 'Creare furnizor/client', message: 'Eroare la apelarea serviciului ANAF! Încercați mai târziu sau introduceți datele manual.' });
+        res.render('generatevb', { title: 'Creare furnizor/client', message: `Eroare la crearea înregistrării: ${error}` });
     }
 });
 
@@ -49,7 +49,7 @@ router.post('/', async (req, res, next) => {
 router.post('/test', function (req, res) {
     let taxdata = req.body.taxdata
     console.log('taxdata from POST', taxdata)
-   atvaapi(taxdata)
+    atvaapi(taxdata)
         .then(data => {
             res.render('index', { title: 'E-Factura', taxdata: data })
         })
@@ -57,5 +57,15 @@ router.post('/test', function (req, res) {
             res.send(error)
         })
 });
+
+// const doc = await Person.findOne({ _id });
+// // Sets `name` and unsets all other properties
+// doc.overwrite({ name: 'Jean-Luc Picard' });
+// await doc.save(); // with validation
+
+// const filter = { _id: 'your-document-id' };
+// const update = { name: 'Jean-Luc Picard' };
+// const options = { upsert: true };
+// await Person.findOneAndUpdate(filter, update, options);
 
 module.exports = router;

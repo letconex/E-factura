@@ -15,14 +15,93 @@ const vendorschema = new Schema({
     cod_CAEN: { type: String },
     iban: { type: String },
     statusRO_e_Factura: { type: Boolean },
-    organFiscalCompetent: { type: Boolean },
-    forma_de_proprietate: { type: Boolean },
-    forma_organizare: { type: Boolean },
-    forma_juridica: { type: Boolean },
+    organFiscalCompetent: { type: String },
+    forma_de_proprietate: { type: String },
+    forma_organizare: { type: String },
+    forma_juridica: { type: String },
+    scpTVA: { type: Boolean },
+    statusTvaIncasare: { type: Boolean },
+    statusInactivi: { type: Boolean },
+    statusSplitTVA: { type: Boolean },
+    email: { type: String },
+    web: { type: String },
+    comments: { type: String }
+}, {
+    timestamps: true
 });
-// createdAt: {type: Date, default: Date.now}
+
+// {timestamps: true}
+// createdAt: { type: Date, default: Date.now },
+// updatedAt: { type: Date, default: Date.now }
+
+// vendorschema.pre('save', function(next) {
+//   this.updatedAt = Date.now();
+//   next();
+
+const inregistrare_scop_Tva = new Schema({
+    inregistrare_scop_Tva: {
+        scpTVA: { type: Boolean },
+        perioade_TVA: [String]
+    }
+});
+
+const inregistrare_RTVAI = new Schema({
+    inregistrare_RTVAI: {
+        dataSfarsitTvaInc: { type: String },
+        dataActualizareTvaInc: { type: String },
+        dataPublicareTvaInc: { type: String },
+        tipActTvaInc: { type: String },
+        statusTvaIncasare: { type: Boolean },
+    }
+});
+
+const stare_inactiv = new Schema({
+    stare_inactiv: {
+        dataInactivare: { type: String },
+        dataReactivare: { type: String },
+        dataPublicare: { type: String },
+        dataRadiere: { type: String },
+        statusInactivi: { type: Boolean }
+    }
+});
+
+const inregistrare_SplitTVA = new Schema({
+    inregistrare_SplitTVA: {
+        dataInceputSplitTVA: { type: String },
+        dataAnulareSplitTVA: { type: String },
+        statusSplitTVA: { type: Boolean },
+    }
+});
+
 const Vendormodel = mongoose.model('Vendor', vendorschema);
-const newvendor = new Vendormodel({ cui: '1', denumire: 'Firma1', adresa: 'adresa1', nrRegCom: 'nrRegCom1', telefon: '0729947926' });
+// const newvendor = new Vendormodel({ cui: '1', denumire: 'Firma1', adresa: 'adresa1', nrRegCom: 'nrRegCom1', telefon: '0729947926' });
+const newvendor = new Vendormodel({
+    "cui": 19467555,
+    "data": "2023-10-27",
+    "denumire": "LEON TIBERIU CRISTIAN PERSOANĂ FIZICĂ AUTORIZATĂ",
+    "adresa": "JUD. BRAŞOV, MUN. SĂCELE, STR. VALEA CERNATULUI, NR.47",
+    "nrRegCom": "F08/388/2003",
+    "telefon": "0729947925",
+    "fax": "",
+    "codPostal": "505600",
+    "act": "",
+    "stare_inregistrare": "RELUARE ACTIVITATE din data 30.04.2013",
+    "data_inregistrare": "2007-01-01",
+    "cod_CAEN": "7430",
+    "iban": "",
+    "statusRO_e_Factura": false,
+    "organFiscalCompetent": "Administraţia Judeţeană a Finanţelor Publice Braşov",
+    "forma_de_proprietate": "",
+    "forma_organizare": "",
+    "forma_juridica": "",
+    "scpTVA": false,
+    "statusTvaIncasare": false,
+    "statusInactivi": false,
+    "statusSplitTVA": false,
+    "email": "letconex@yahoo.de",
+    "web": "www.traduceri.pluto.ro",
+    "comments": "Traduceri",
+});
 // console.log(newvendor);
 // const uri = 'mongodb://127.0.0.1:27017/e-factura?tls=false'
 // mongoose.connect(uri);
@@ -45,10 +124,10 @@ async function conmongodb(uri) {
     await newvendor.save()
         .then((newvendor) => console.log('Successfully added vendor:', newvendor))
         .catch(err => console.log('Failed to add vendor: ', err))
-    // .finally(() => {
-    //     connection.close()
-    //     console.log('MongoDB connection closed')
-    // })
+        .finally(() => {
+            connection.close()
+            console.log('MongoDB connection closed')
+        })
     // await Vendormodel.find({}, {'denumire': 1, '_id': 0 })
     await Vendormodel.find({ '__v': 0 })
         .then(vendors =>
@@ -65,6 +144,24 @@ async function conmongodb(uri) {
             console.log('MongoDB connection closed')
         })
 }
+
+async function findall(model) {
+    await model.find({ '__v': 0 })
+        .then(documents =>
+            documents.forEach(x => console.log(x)))
+        // .then(documents => {
+        //     // outputArray = documents.map(obj => ({ denumire: obj.denumire }))
+        //     // outputArray = documents.map(obj => obj.denumire)
+        //     // console.log('Documents', outputArray)
+        //     
+        // })
+        .catch(err => console.log('Failed to add vendor: ', err))
+        .finally(() => {
+            console.log('Documents', documents)
+        })
+}
+
+
 // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');`
 // In your case, the error is occurring because you are missing a pair of {} to wrap the body of your arrow function
 // inside the .then() method. When an arrow function has no {} around its body,
@@ -79,10 +176,9 @@ async function conmongodb(uri) {
 //   connection.close()
 // });
 
-// module.exports = { Vendormodel, vendorschema };
-exports.Vendormodel = Vendormodel
-exports.vendorschema = vendorschema
-
+// exports.Vendormodel = Vendormodel
+// exports.vendorschema = vendorschema
+module.exports = { Vendormodel, vendorschema };
 // https://mongoosejs.com/docs/models.html#compiling
 const AddressSchema = mongoose.Schema({
     city: String,
@@ -109,6 +205,34 @@ const CustomerSchema = mongoose.Schema({
 const CustomerModel = mongoose.model("Customer", CustomerSchema);
 
 /*
+
+(async () => {
+    try {
+        const newvendor = new vendorModel(data);
+        await newvendor.save();
+        console.log('Successfully added vendor:', newvendor);
+
+        // Replace the fields in the `update` object with the fields you want to update
+        const update = {
+            fieldToUpdate: newValue
+        };
+
+        // Define the options for the findOneAndUpdate() function
+        const options = {
+            new: true // To return the updated document
+        };
+
+        // Call the findOneAndUpdate() function
+        const updatedVendor = await newvendor.findOneAndUpdate(update, options);
+        console.log('Successfully updated vendor:', updatedVendor);
+    } catch (err) {
+        console.log('Failed to add/update vendor: ', err);
+    } finally {
+        connection.close();
+        console.log('MongoDB connection closed');
+    }
+})();
+
 // module.exports = mongoose.model("Vendor", vendorschema);
 // factura/app.js
 const User = require('./public/javascripts/user');
