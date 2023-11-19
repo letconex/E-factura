@@ -1,8 +1,9 @@
 extends layout
 
 block content
-    script(type='text/javascript', src='/public/javascripts/localstorage.js')
-    p.message #{message}
+    script(type='text/javascript', src='/javascripts/functions.js')
+
+    p.message#message #{message}
     form(action="/", method="post")
         label(for="input") Selectează furnizor/client: 
     select
@@ -10,21 +11,44 @@ block content
             option(value=vendor.denumire) #{vendor.denumire}
         input(type="submit", value="Afișează")
 
-    p Firme: 
-        each vendor in vendordata
-            i #{vendor.denumire} 
         table(style='width:100%', border='1')
-            tbody
+            thead
                 tr(class='vendorshead')
                     th(class='vendorhead') ID
                     th(class='vendorhead') Denumire
                     th(class='vendorhead') CUI
                     th(class='vendorhead') Registrul Comerțului
                     th(class='vendorhead') Adresa
-                    each vendor in vendordata
-                        tr(class='vendors')
-                            td(class='vendor') #{vendor._id}
-                            td(class='vendor') #{vendor.denumire}
-                            td(class='vendor') #{vendor.cui}
-                            td(class='vendor') #{vendor.nrRegCom}
-                            td(class='vendor') #{vendor.adresa}
+                    th(class='vendorhead') Acțiuni
+            tbody
+                each vendor in vendordata
+                    tr(class='vendors')
+                        td(class='vendor' id=vendor._id) #{vendor._id}
+                        td(class='vendor') #{vendor.date_generale.cui}
+                        td(class='vendor') #{vendor.cui}
+                        td(class='vendor') #{vendor.nrRegCom}
+                        td(class='vendor') #{vendor.adresa}
+                        td(class='vendor')
+                            a(href="/generatevb")
+                                button.editbutton Editare
+                            button.deletebutton(onclick=`deleteVendor("${vendor._id}")`) Ștergere 
+                            
+            tfoot
+                tr(class='vendorsfooter')
+                    td(colspan="1") Numărul înregistrărilor: #{vendordata.length}
+                    td(colspan=4) Ultima actualizare a datelor: #{Object.values(vendordata).at(-1).updatedAt}
+                    td(class='vendor')
+                        button(class='deletebutton' onclick="deleteallVendors()") Ștergeți toate
+        details
+            summary Listă firme
+            ol(type="1")
+                each vendor in vendordata
+                    li 
+                        i #{vendor.denumire}
+                    ul
+                        li
+                            i #{vendor.cui}
+                        li
+                            i #{vendor.nrRegCom}
+                        li
+                            i #{vendor.adresa}

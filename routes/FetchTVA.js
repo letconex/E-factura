@@ -9,7 +9,7 @@ router.post('/', async (req, res, next) => {
         let taxdata = await atvaapi(cui);
         console.log(JSON.stringify(taxdata));
         try {
-            res.render('fetchtva', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
+            res.render('generatevb', { title: 'Căutare firmă', message: cui, taxdata: taxdata })
         } catch (error) {
             console.error(error)
             res.status(500).send(`Eroare la afișarea datelor TVA: ${error}`)

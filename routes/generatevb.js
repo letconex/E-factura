@@ -12,7 +12,11 @@ router.post('/', async (req, res, next) => {
     try {
         let data = req.body
         console.log('taxdata from POST', data)
-        const newvendor = new Vendormodel({ cui: data.cui, denumire: data.denumire, adresa: data.adresa, nrRegCom: data.nrRegCom });
+        const newvendor = new Vendormodel({
+            date_generale: {
+                cui: data.cui, denumire: data.cui, adresa: data.adresa, nrRegCom: data.nrRegCom
+            }
+        });
         try {
             await newvendor.save()
             res.render('generatevb', { title: 'Creare furnizor/client', message: data.cui, taxdata: data })

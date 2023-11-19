@@ -14,6 +14,25 @@ block content
         <p> NodeJS, Express, Mongoose, Pug
     details
         summary Schemă Mongoose
-        pre= JSON.stringify(vendorschema, null, 2)
+        //- pre= JSON.stringify(Object.keys(vendorschema.tree), null, 2)
+        p #{Object.keys(vendorschema.tree).join(', ')}
+        ul
+            li #{Object.keys(vendorschema.tree.date_generale.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.inregistrare_scop_Tva.paths).join(', ')}
+                ul
+                    li #{Object.keys(vendorschema.tree.inregistrare_scop_Tva.paths.perioade_TVA.schema.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.inregistrare_RTVAI.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.stare_inactiv.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.inregistrare_SplitTVA.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.adresa_sediu_social.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.adresa_domiciliu_fiscal.paths).join(', ')}
+            li #{Object.keys(vendorschema.tree.extras.paths).join(', ')}
+
+
     p #{credentials}
     p Licență GPL.
+    //- a(href="/public/images/OIP.jpg" download="Logo")
+    //-     img(src="images/OIP.jpg" alt="Logo" width="200" height="100")
+    a(href="images/Logo.webp")
+        img(src="images/Logo.webp" alt="Logo" width="200" height="100")
+    

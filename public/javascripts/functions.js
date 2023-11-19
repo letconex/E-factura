@@ -3,16 +3,56 @@ function deleteVendor(vendorId) {
         fetch('/deletevb/' + vendorId, {
             method: 'DELETE',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            // Optionally, remove the table row from the DOM
-            // document.getElementById(vendorId).closest('tr').remove();
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                document.querySelector("#message").textContent = "Furnizor șters"
+                document.querySelector(`#${vendorId}`).closest('tr').remove();
+                // document.getElementById(vendorId).closest('tr').remove();
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    }
+}
+
+function deleteallVendors(vendorId) {
+    if (confirm('Sunteți sigur că doriți să ștergeți toate înregistrările?\nAceastă operațiune nu poate fi revocată!')) {
+        fetch('/deleteallvb/' + vendorId, {
+            method: 'DELETE',
         })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Optionally, remove the table rows from the DOM
+                document.getElementsByTagName('tr').remove();
+                window.location.reload()
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    }
+}
+
+function deleteVendorjson(vendorId) {
+    if (confirm('Sunteți sigur că doriți să ștergeți acest furnizor?')) {
+        fetch('/deletevb/' + vendorId, {
+            method: 'DELETE',
+        })
+            .then(response => response.json()) // Assuming the server sends a JSON response
+            .then(data => {
+                console.log(data.message); // Log the success message
+                document.querySelector("#message").textContent = data.message
+                // Optionally, redirect or reload the page to see the changes
+                // window.location.reload(); // Reload the current page
+                window.location.href = '/'; // Redirect to the home page
+                document.querySelector("#message").innerText = data.message
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
     }
 }
 
@@ -69,7 +109,7 @@ function displayItems() {
     // totalrow.setAttribute("colspan", document.getElementById('producttable').rows.length)
     totalrow.innerHTML = '<td colspan="' + document.getElementById('producttable').rows.length + '">Preț total: ' + sumafinala + '</td>'
     tabel.appendChild(totalrow);
-    adddeletebuttons ()
+    adddeletebuttons()
     let modbuttons = document.getElementsByName('modcant');
     for (let i = 0; i < modbuttons.length; i++) {
         modbuttons[i].addEventListener('click', function () {
@@ -90,7 +130,7 @@ function displayItems() {
     }
 }
 
-function adddeletebuttons () {
+function adddeletebuttons() {
     let deletebuttons = document.getElementsByName('delete');
     for (let i = 0; i < deletebuttons.length; i++) {
         deletebuttons[i].addEventListener('click', function () {

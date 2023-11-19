@@ -11,19 +11,21 @@ block content
         fieldset
             legend Furnizor/client
             //- pre= JSON.stringify(taxdata, null, 2)
-            p Câmpuri obligatorii:
+            p.fields Câmpuri obligatorii:
             div.mandatory#divmandatory
+                span.categories Date generale
                 div(class="taxdatagroup")
                     label(for="cui") CUI*:
                     input(type="text" id="cui" name="cui" value=(taxdata ? taxdata.found[0].date_generale.cui : none) placeholder="Cod fiscal" title="Cod fiscal" required)
                     label(for="denumire") Denumire*:
                     input(type="text", id="denumire" name="denumire" value=(taxdata ? taxdata.found[0].date_generale.denumire : none) placeholder="Denumirea firmei" title="Denumirea firmei", required)
                     label(for="adresa") Adresa*:
-                    input(type="text", id="adresa" name="adresa" placeholder="Adresa firmei" title="Adresa firmei", required)
+                    input(type="text", id="adresa" name="adresa" value=(taxdata ? taxdata.found[0].date_generale.adresa : none) placeholder="Adresa firmei" title="Adresa firmei", required)
                     label(for="nrRegCom") Registrul Comerțului*:
-                    input(type="text", id="nrRegCom" name="nrRegCom" placeholder="Registrul Comerțului" title="Număr de înregistrare în Registrul Comerțului", required)
-            p Câmpuri facultative:
+                    input(type="text", id="nrRegCom" name="nrRegCom" value=(taxdata ? taxdata.found[0].date_generale.nrRegCom : none) placeholder="Registrul Comerțului" title="Număr de înregistrare în Registrul Comerțului", required)
+            p.fields Câmpuri facultative:
             div.optional#divoptional
+                span.categories Date generale
                 div(class="taxdatagroup")
                     label(for="telefon") Telefon:
                     input(type="text", id="telefon" name="telefon" placeholder="Număr de telefon" title="Număr de telefon")
@@ -54,15 +56,60 @@ block content
                 div(class="taxdatagroup")
                     label(for="forma_juridica") Formă juridică:
                     input(type="text", id="forma_juridica" name="forma_juridica" placeholder="Formă juridică" title="Formă juridică")
-                    label(for="scpTVA") Înregistrare in scop TVA:
-                    input(type="text", id="scpTVA" name="scpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
-                    label(for="statusTvaIncasare") Înregistrare RTVAI: 
-                    input(type="text", id="statusTvaIncasare" name="statusTvaIncasare" placeholder="Înregistrare RTVAI" title="Înregistrare RTVAI")
-                    label(for="stare_inactiv") Stare inactivi:
-                    input(type="text", id="stare_inactiv" name="stare_inactiv" placeholder="Stare inactivi" title="Stare inactivi")
+                span.categories Înregistrare scop TVA
                 div(class="taxdatagroup")
-                    label(for="statusSplitTVA") Înregistrare Split TVA: 
-                    input(type="text", id="statusSplitTVA" name="statusSplitTVA" placeholder="Înregistrare Split TVA" title="Înregistrare Split TVA")
+                    label(for="scpTVA") Scop TVA:
+                    input(type="text", id="scpTVA" name="scpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                span.categories Perioade TVA
+                div(class="taxdatagroup")
+                    label(for="data_inceput_ScpTVA") Înregistrare in scop TVA:
+                    input(type="text", id="data_inceput_ScpTVA" name="data_inceput_ScpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                    label(for="data_sfarsit_ScpTVA") Înregistrare in scop TVA:
+                    input(type="text", id="data_sfarsit_ScpTVA" name="data_sfarsit_ScpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                    label(for="data_anul_imp_ScpTVA") Înregistrare in scop TVA:
+                    input(type="text", id="data_anul_imp_ScpTVA" name="data_anul_imp_ScpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                    label(for="mesaj_ScpTVA") Înregistrare in scop TVA:
+                    input(type="text", id="mesaj_ScpTVA" name="mesaj_ScpTVA" placeholder="Înregistrare in scop TVA" title="Înregistrare in scop TVA")
+                span.categories Înregistrare RTVAI
+                div(class="taxdatagroup")
+                    label(for="dataInceputTvaInc") Dată început TVA încasare:
+                    input(type="text", id="dataInceputTvaInc" name="dataInceputTvaInc" placeholder="Dată început TVA încasare" title="Dată început TVA încasare")
+                    label(for="dataSfarsitTvaInc") Dată sfârșit TVA încasare:
+                    input(type="text", id="dataSfarsitTvaInc" name="dataSfarsitTvaInc" placeholder="Dată sfârșit TVA încasare" title="Dată sfârșit TVA încasare")
+                    label(for="dataActualizareTvaInc") Dată actualizare TVA încasare:
+                    input(type="text", id="dataActualizareTvaInc" name="dataActualizareTvaInc" placeholder="Dată actualizare TVA încasare" title="Dată actualizare TVA încasare")
+                    label(for="dataPublicareTvaInc") Dată publicare TVA încasare:
+                    input(type="text", id="dataPublicareTvaInc" name="dataPublicareTvaInc" placeholder="Dată publicare TVA încasare" title="Dată publicare TVA încasare")
+                div(class="taxdatagroup")
+                    label(for="tipActTvaInc") Tip act TVA încasare:
+                    input(type="text", id="tipActTvaInc" name="tipActTvaInc" placeholder="Tip act TVA încasare" title="Tip act TVA încasare")
+                    label(for="statusTvaIncasare") Status TVA încasare:
+                    input(type="text", id="statusTvaIncasare" name="statusTvaIncasare" placeholder="Status TVA încasare" title="Status TVA încasare")
+                span.categories Stare inactivi
+                div(class="taxdatagroup")
+                    label(for="dataInactivare") Dată inactivare:
+                    input(type="text", id="dataInactivare" name="dataInactivare" placeholder="Dată inactivare" title="Dată inactivare")
+                    label(for="dataReactivare") Dată reactivare:
+                    input(type="text", id="dataReactivare" name="dataReactivare" placeholder="Dată reactivare" title="Dată reactivare")
+                    label(for="dataPublicare") Dată publicare:
+                    input(type="text", id="dataPublicare" name="dataPublicare" placeholder="Dată publicare" title="Dată publicare")
+                    label(for="dataRadiere") Dată radiere:
+                    input(type="text", id="dataRadiere" name="dataRadiere" placeholder="Dată radiere" title="Dată radiere")
+                div(class="taxdatagroup")
+                    label(for="stare_inactiv") Stare inactiv:
+                    input(type="text", id="stare_inactiv" name="stare_inactiv" placeholder="Stare inactivi" title="Stare inactivi")
+                span.categories Stare Înregistrare Split TVA:
+                div(class="taxdatagroup")
+                    label(for="dataInceputSplitTVA") Dată început split TVA:
+                    input(type="text", id="dataInceputSplitTVA" name="dataInceputSplitTVA" placeholder="Dată început split TVA" title="Dată început split TVA")
+                    label(for="dataAnulareSplitTVA") Dată anulare split TVA:
+                    input(type="text", id="dataAnulareSplitTVA" name="dataAnulareSplitTVA" placeholder="Dată anulare split TVA" title="Dată anulare split TVA")
+                    label(for="statusSplitTVA") Status split TVA:
+                    input(type="text", id="statusSplitTVA" name="statusSplitTVA" placeholder="Status split TVA" title="Status split TVA")
+                span.categories Informații suplimentare:
+                div(class="taxdatagroup")
+                    label(for="contactperson") Persoană de contact:
+                    input(type="text", id="contactperson" name="contactperson" placeholder="Persoană de contact" title="Persoană de contact")
                     label(for="email") E-mail:
                     input(type="text", id="email" name="email" placeholder="Adresă de e-mail" title="Adresă de e-mail")
                     label(for="web") WEB:
